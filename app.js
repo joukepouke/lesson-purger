@@ -7,7 +7,6 @@ class ScheduleManager {
             { id: 4, start: "11:00", end: "11:45" },
             { id: 5, start: "12:30", end: "13:15" },
             { id: 6, start: "13:20", end: "14:05" },
-            { id: 8, start: "15:15", end: "16:00" },
             { id: 9, start: "16:05", end: "17:00" }
         ];
         
