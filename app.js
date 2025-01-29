@@ -7,7 +7,8 @@ class ScheduleManager {
             { id: 4, start: "11:00", end: "11:45" },
             { id: 5, start: "12:30", end: "13:15" },
             { id: 6, start: "13:20", end: "14:05" },
-            { id: 7, start: "16:05", end: "17:00" }
+            { id: 7, start: "14:25", end: "15:10" },
+            { id: 8, start: "15:15", end: "16:00" }
         ];
         
         this.deletedLessons = new Set();
@@ -19,7 +20,7 @@ class ScheduleManager {
     init() {
         this.recalculateSchedule();
         this.renderScheduleList();
-        requestAnimationFrame(() => this.update());
+        this.update();
     }
 
     recalculateSchedule() {
@@ -76,35 +77,39 @@ class ScheduleManager {
         const container = document.getElementById('schedule');
         container.innerHTML = this.originalSchedule.map(lesson => `
             <div class="lesson-item ${this.deletedLessons.has(lesson.id) ? 'ghost' : ''}">
-                <input type="checkbox" 
-                    ${this.deletedLessons.has(lesson.id) ? 'checked' : ''}
-                    onchange="schedule.toggleLesson(${lesson.id})">
-                ${this.formatMinutes(this.timeToMinutes(lesson.start))} - 
-                ${this.formatMinutes(this.timeToMinutes(lesson.end))}
+                <label class="checkbox-container">
+                    <input type="checkbox" 
+                        ${!this.deletedLessons.has(lesson.id) ? 'checked' : ''}
+                        onchange="schedule.toggleLesson(${lesson.id})">
+                    <div class="checkbox-custom"></div>
+                    ${this.formatMinutes(this.timeToMinutes(lesson.start))} - 
+                    ${this.formatMinutes(this.timeToMinutes(lesson.end))}
+                </label>
             </div>
         `).join('');
     }
 
     update() {
         const now = new Date();
-        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds()/60;
+        const currentSeconds = now.getSeconds() + now.getMilliseconds()/1000;
         
-        // Update time displays
+        // Ultra-precise time display
         document.getElementById('current-time').textContent = 
-            now.toLocaleTimeString('en-GB', { hour12: false });
+            `${String(now.getHours()).padStart(2,'0')}:` +
+            `${String(now.getMinutes()).padStart(2,'0')}:` +
+            `${String(now.getSeconds()).padStart(2,'0')}.` +
+            `${String(now.getMilliseconds()).padStart(3,'0')}`;
             
-        // Update statistics and progress bars
         this.updateStatistics(currentMinutes);
-        
-        requestAnimationFrame(() => this.update());
+        setTimeout(() => this.update(), 50);
     }
 
     updateStatistics(currentMinutes) {
-        let currentBlock = null;
+        let currentSegment = null;
         let dayProgress = 0;
         let totalDayDuration = 0;
         
-        // Calculate all time segments
         const timeSegments = [];
         this.cachedPhases.forEach(phase => {
             phase.forEach((lesson, index) => {
@@ -119,41 +124,19 @@ class ScheduleManager {
             });
         });
 
-        // Find current segment and calculate progress
-        let currentSegment = null;
-        for (const segment of timeSegments) {
+        // Calculate total day duration
+        timeSegments.forEach(segment => {
             totalDayDuration += segment.end - segment.start;
-            
+        });
+
+        // Find current segment
+        timeSegments.forEach(segment => {
             if (currentMinutes >= segment.start && currentMinutes < segment.end) {
                 currentSegment = segment;
             }
-            
-            if (currentMinutes >= segment.start) {
-                dayProgress += Math.min(segment.end, currentMinutes) - segment.start;
-            }
-        }
+        });
 
-        // Update UI elements
-        const statsHTML = this.cachedPhases.map((phase, phaseIndex) => {
-            const phaseStart = this.timeToMinutes(phase[0].start);
-            const phaseEnd = this.timeToMinutes(phase[phase.length-1].end);
-            const phaseProgress = Math.max(0, currentMinutes - phaseStart);
-            const phaseTotal = phaseEnd - phaseStart;
-            
-            return `
-                <div class="stat-card">
-                    <h3>Phase ${phaseIndex + 1}</h3>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${(phaseProgress/phaseTotal)*100}%"></div>
-                    </div>
-                    ${Math.round((phaseProgress/phaseTotal)*100)}% • 
-                    ${Math.floor(phaseProgress/60)}m ${phaseProgress%60}s
-                </div>
-            `;
-        }).join('');
-        
-        document.getElementById('stats').innerHTML = statsHTML;
-        
+        // Update time displays
         if (currentSegment) {
             const elapsed = currentMinutes - currentSegment.start;
             const total = currentSegment.end - currentSegment.start;
@@ -162,8 +145,42 @@ class ScheduleManager {
             document.getElementById('lesson-end').textContent = 
                 `ENDS AT: ${this.formatMinutes(currentSegment.end)}`;
             document.getElementById('time-remaining').textContent = 
-                `REMAINING: ${Math.floor(remaining/60)}m ${remaining%60}s`;
+                `REMAINING: ${remaining.toFixed(3)}m (${(remaining*60).toFixed(1)}s)`;
         }
+
+        // Phase statistics
+        const activePhases = this.cachedPhases.filter(phase => {
+            const phaseEnd = this.timeToMinutes(phase[phase.length-1].end);
+            return currentMinutes < phaseEnd;
+        });
+
+        const statsHTML = activePhases.map((phase, phaseIndex) => {
+            const phaseStart = this.timeToMinutes(phase[0].start);
+            const phaseEnd = this.timeToMinutes(phase[phase.length-1].end);
+            const phaseProgress = Math.max(0, Math.min(currentMinutes - phaseStart, phaseEnd - phaseStart));
+            const phaseTotal = phaseEnd - phaseStart;
+            const progressPercent = (phaseProgress / phaseTotal) * 100;
+            const remaining = phaseEnd - currentMinutes;
+
+            return `
+                <div class="stat-card">
+                    <h3>Phase ${phaseIndex + 1}</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progressPercent}%"></div>
+                    </div>
+                    <div class="stats-grid-inner">
+                        <div>${progressPercent.toFixed(7)}%</div>
+                        <div>${(phaseProgress/60).toFixed(5)}h</div>
+                        <div>${phaseProgress.toFixed(3)}m</div>
+                        <div>${remaining.toFixed(3)}m left</div>
+                        <div>${(phaseProgress*60).toFixed(1)}s</div>
+                        <div>${(remaining*60).toFixed(1)}s left</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        document.getElementById('stats').innerHTML = statsHTML;
     }
 }
 
