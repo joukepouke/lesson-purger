@@ -360,8 +360,8 @@
                     
                     document.getElementById('current-lesson-stats').innerHTML = [
                         this.createUnit('Progress', `${((elapsed/total)*100).toFixed(5)}%`),
-                        this.createUnit('Elapsed', `${elapsed.toFixed(1)}m`),
-                        this.createUnit('Remaining', `${remaining.toFixed(1)}m`),
+                        this.createUnit('Elapsed', `${elapsed.toFixed(5)}m`),
+                        this.createUnit('Remaining', `${remaining.toFixed(5)}m`),
                         this.createUnit('Ends At', this.formatMinutes(currentSegment.end))
                     ].join('');
                 }
@@ -377,8 +377,8 @@
                     
                     document.getElementById('current-phase-stats').innerHTML = [
                         this.createUnit('Progress', `${((phaseElapsed/phaseTotal)*100).toFixed(5)}%`),
-                        this.createUnit('Elapsed', `${phaseElapsed.toFixed(1)}m`),
-                        this.createUnit('Remaining', `${phaseRemaining.toFixed(1)}m`),
+                        this.createUnit('Elapsed', `${phaseElapsed.toFixed(5)}m`),
+                        this.createUnit('Remaining', `${phaseRemaining.toFixed(5)}m`),
                         this.createUnit('Total', `${phaseTotal.toFixed(1)}m`)
                     ].join('');
                 }
