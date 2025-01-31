@@ -364,6 +364,9 @@
                         this.createUnit('Remaining', `${remaining.toFixed(5)}m`),
                         this.createUnit('Ends At', this.formatMinutes(currentSegment.end))
                     ].join('');
+                    
+                    document.getElementById('lesson-end').innerHTML = 'LESSON ENDS AT: ' + this.formatMinutes(currentSegment.end)
+                    document.getElementById('time-remaining').innerHTML = 'TIME REMAINING IN CURRENT LESSON: ' + `${remaining.toFixed(5)}m`
                 }
 
                 // Update phase stats
@@ -395,6 +398,8 @@
                     this.createUnit('Remaining', `${(dayRemaining/60).toFixed(3)}h`),
                     this.createUnit('Total', `${(totalDayDuration/60).toFixed(3)}h`)
                 ].join('');
+                
+                
             }
         }
 
