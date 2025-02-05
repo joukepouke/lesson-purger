@@ -206,29 +206,13 @@
                     { id: 5, start: "12:30", end: "13:15" },
                     { id: 6, start: "13:20", end: "14:05" },
                     { id: 7, start: "14:25", end: "15:10" },
-                    { id: 8, start: "15:15", end: "18:00" }
+                    { id: 8, start: "15:15", end: "16:00" }
                 ];
                 
                 this.deletedLessons = new Set();
                 this.cachedPhases = [];
-                this.domCache = {};
-                this.prepareDOMCache();
+                this.lastUpdate = 0;
                 this.init();
-            }
-
-            prepareDOMCache() {
-                this.domCache.currentTime = document.getElementById('current-time');
-                this.domCache.lessonEnd = document.getElementById('lesson-end');
-                this.domCache.timeRemaining = document.getElementById('time-remaining');
-                
-                this.domCache.currentLessonProgress = document.getElementById('current-lesson-progress');
-                this.domCache.currentLessonStats = document.getElementById('current-lesson-stats');
-                
-                this.domCache.currentPhaseProgress = document.getElementById('current-phase-progress');
-                this.domCache.currentPhaseStats = document.getElementById('current-phase-stats');
-                
-                this.domCache.dayProgress = document.getElementById('day-progress');
-                this.domCache.dayStats = document.getElementById('day-stats');
             }
 
             init() {
@@ -249,6 +233,8 @@
             }
 
             recalculateSchedule() {
+                if (Date.now() - this.lastUpdate < 1000) return;
+                
                 const activeLessons = this.originalSchedule.filter(lesson => 
                     !this.deletedLessons.has(lesson.id)
                 );
@@ -271,6 +257,8 @@
                 if (currentPhase.length > 0) {
                     this.cachedPhases.push(currentPhase);
                 }
+                
+                this.lastUpdate = Date.now();
             }
 
             toggleLesson(lessonId) {
@@ -301,14 +289,14 @@
                 const now = new Date();
                 const currentMinutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds()/60;
                 
-                this.domCache.currentTime.textContent = 
+                document.getElementById('current-time').textContent = 
                     `${String(now.getHours()).padStart(2,'0')}:` +
                     `${String(now.getMinutes()).padStart(2,'0')}:` +
                     `${String(now.getSeconds()).padStart(2,'0')}.` +
                     `${String(now.getMilliseconds()).padStart(3,'0')}`;
                 
                 this.updateStatistics(currentMinutes);
-                requestAnimationFrame(() => this.update());
+                setTimeout(() => this.update(), 50);
             }
 
             createUnit(label, value) {
@@ -326,6 +314,7 @@
                 let totalDayDuration = 0;
                 let currentPhase = null;
 
+                // Calculate all time segments
                 const timeSegments = [];
                 this.cachedPhases.forEach(phase => {
                     const phaseStart = this.timeToMinutes(phase[0].start);
@@ -343,6 +332,7 @@
                     });
                 });
 
+                // Process all segments
                 timeSegments.forEach(segment => {
                     totalDayDuration += segment.end - segment.start;
                     
@@ -359,52 +349,57 @@
                     }
                 });
 
+                // Update current lesson/break stats
                 if (currentSegment) {
                     const elapsed = currentMinutes - currentSegment.start;
                     const total = currentSegment.end - currentSegment.start;
                     const remaining = currentSegment.end - currentMinutes;
                     
-                    this.domCache.currentLessonProgress.style.width = 
+                    document.getElementById('current-lesson-progress').style.width = 
                         `${(elapsed/total)*100}%`;
                     
-                    this.domCache.currentLessonStats.innerHTML = [
-                        this.createUnit('Progress', `${((elapsed/total)*100).toFixed(1)}%`),
-                        this.createUnit('Elapsed', `${elapsed.toFixed(1)}m`),
-                        this.createUnit('Remaining', `${remaining.toFixed(1)}m`),
+                    document.getElementById('current-lesson-stats').innerHTML = [
+                        this.createUnit('Progress', `${((elapsed/total)*100).toFixed(5)}%`),
+                        this.createUnit('Elapsed', `${elapsed.toFixed(5)}m`),
+                        this.createUnit('Remaining', `${remaining.toFixed(5)}m`),
                         this.createUnit('Ends At', this.formatMinutes(currentSegment.end))
                     ].join('');
                     
-                    this.domCache.lessonEnd.textContent = 'LESSON ENDS AT: ' + this.formatMinutes(currentSegment.end);
-                    this.domCache.timeRemaining.textContent = 'TIME REMAINING IN CURRENT LESSON: ' + `${remaining.toFixed(1)}m`;
+                    document.getElementById('lesson-end').innerHTML = 'LESSON ENDS AT: ' + this.formatMinutes(currentSegment.end)
+                    document.getElementById('time-remaining').innerHTML = 'TIME REMAINING IN CURRENT LESSON: ' + `${remaining.toFixed(5)}m`
                 }
 
+                // Update phase stats
                 if (currentPhase) {
                     const phaseElapsed = currentMinutes - currentPhase.start;
                     const phaseTotal = currentPhase.end - currentPhase.start;
                     const phaseRemaining = currentPhase.end - currentMinutes;
                     
-                    this.domCache.currentPhaseProgress.style.width = 
+                    document.getElementById('current-phase-progress').style.width = 
                         `${(phaseElapsed/phaseTotal)*100}%`;
                     
-                    this.domCache.currentPhaseStats.innerHTML = [
-                        this.createUnit('Progress', `${((phaseElapsed/phaseTotal)*100).toFixed(1)}%`),
-                        this.createUnit('Elapsed', `${phaseElapsed.toFixed(1)}m`),
-                        this.createUnit('Remaining', `${phaseRemaining.toFixed(1)}m`),
+                    document.getElementById('current-phase-stats').innerHTML = [
+                        this.createUnit('Progress', `${((phaseElapsed/phaseTotal)*100).toFixed(5)}%`),
+                        this.createUnit('Elapsed', `${phaseElapsed.toFixed(5)}m`),
+                        this.createUnit('Remaining', `${phaseRemaining.toFixed(5)}m`),
                         this.createUnit('Total', `${phaseTotal.toFixed(1)}m`)
                     ].join('');
                 }
 
-                const dayTotal = totalDayDuration || 1;
+                // Update day progress
+                const dayTotal = totalDayDuration || 1; // Prevent division by zero
                 const dayPercent = (dayProgress/dayTotal)*100;
                 const dayRemaining = totalDayDuration - dayProgress;
                 
-                this.domCache.dayProgress.style.width = `${dayPercent}%`;
-                this.domCache.dayStats.innerHTML = [
-                    this.createUnit('Progress', `${dayPercent.toFixed(1)}%`),
-                    this.createUnit('Elapsed', `${(dayProgress/60).toFixed(2)}h`),
-                    this.createUnit('Remaining', `${(dayRemaining/60).toFixed(2)}h`),
-                    this.createUnit('Total', `${(totalDayDuration/60).toFixed(2)}h`)
+                document.getElementById('day-progress').style.width = `${dayPercent}%`;
+                document.getElementById('day-stats').innerHTML = [
+                    this.createUnit('Progress', `${dayPercent.toFixed(5)}%`),
+                    this.createUnit('Elapsed', `${(dayProgress/60).toFixed(3)}h`),
+                    this.createUnit('Remaining', `${(dayRemaining/60).toFixed(3)}h`),
+                    this.createUnit('Total', `${(totalDayDuration/60).toFixed(3)}h`)
                 ].join('');
+                
+                
             }
         }
 
