@@ -379,7 +379,7 @@
                         `${(phaseElapsed/phaseTotal)*100}%`;
                     
                     document.getElementById('current-phase-stats').innerHTML = [
-                        this.createUnit('Progress', `${((phaseElapsed/phaseTotal)*100).toFixed25)}%`),
+                        this.createUnit('Progress', `${((phaseElapsed/phaseTotal)*100).toFixed(25)}%`),
                         this.createUnit('Elapsed', `${phaseElapsed.toFixed(2)}m`),
                         this.createUnit('Remaining', `${phaseRemaining.toFixed(2)}m`),
                         this.createUnit('Total', `${phaseTotal.toFixed(1)}m`)
