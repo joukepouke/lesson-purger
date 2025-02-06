@@ -365,8 +365,8 @@
                         this.createUnit('Ends At', this.formatMinutes(currentSegment.end))
                     ].join('');
                     
-                    document.getElementById('lesson-end').innerHTML = 'CURRENT LESSON ENDS AT: ' + this.formatMinutes(currentSegment.end)
-                    document.getElementById('time-remaining').innerHTML = 'TIME REMAINING IN CURRENT LESSON: ' + `${remaining.toFixed(20)}m`
+                    document.getElementById('lesson-end').innerHTML = 'LESSON ENDS AT: ' + this.formatMinutes(currentSegment.end)
+                    document.getElementById('time-remaining').innerHTML = 'TIME REMAINING IN CURRENT LESSON: ' + `${remaining.toFixed(5)}m`
                 }
 
                 // Update phase stats
