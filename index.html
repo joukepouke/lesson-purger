@@ -359,14 +359,14 @@
                         `${(elapsed/total)*100}%`;
                     
                     document.getElementById('current-lesson-stats').innerHTML = [
-                        this.createUnit('Progress', `${((elapsed/total)*100).toFixed(5)}%`),
-                        this.createUnit('Elapsed', `${elapsed.toFixed(5)}m`),
-                        this.createUnit('Remaining', `${remaining.toFixed(5)}m`),
+                        this.createUnit('Progress', `${((elapsed/total)*100).toFixed(1)}%`),
+                        this.createUnit('Elapsed', `${elapsed.toFixed(2)}m`),
+                        this.createUnit('Remaining', `${remaining.toFixed(2)}m`),
                         this.createUnit('Ends At', this.formatMinutes(currentSegment.end))
                     ].join('');
                     
-                    document.getElementById('lesson-end').innerHTML = 'LESSON ENDS AT: ' + this.formatMinutes(currentSegment.end)
-                    document.getElementById('time-remaining').innerHTML = 'TIME REMAINING IN CURRENT LESSON: ' + `${remaining.toFixed(5)}m`
+                    document.getElementById('lesson-end').innerHTML = 'CURRENT LESSON ENDS AT: ' + this.formatMinutes(currentSegment.end)
+                    document.getElementById('time-remaining').innerHTML = 'TIME REMAINING IN CURRENT LESSON: ' + `${remaining.toFixed(3)}m`
                 }
 
                 // Update phase stats
@@ -379,9 +379,9 @@
                         `${(phaseElapsed/phaseTotal)*100}%`;
                     
                     document.getElementById('current-phase-stats').innerHTML = [
-                        this.createUnit('Progress', `${((phaseElapsed/phaseTotal)*100).toFixed(5)}%`),
-                        this.createUnit('Elapsed', `${phaseElapsed.toFixed(5)}m`),
-                        this.createUnit('Remaining', `${phaseRemaining.toFixed(5)}m`),
+                        this.createUnit('Progress', `${((phaseElapsed/phaseTotal)*100).toFixed25)}%`),
+                        this.createUnit('Elapsed', `${phaseElapsed.toFixed(2)}m`),
+                        this.createUnit('Remaining', `${phaseRemaining.toFixed(2)}m`),
                         this.createUnit('Total', `${phaseTotal.toFixed(1)}m`)
                     ].join('');
                 }
