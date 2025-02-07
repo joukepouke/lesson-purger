@@ -379,10 +379,10 @@
                         `${(phaseElapsed/phaseTotal)*100}%`;
                     
                     document.getElementById('current-phase-stats').innerHTML = [
-                        this.createUnit('Progress', `${((phaseElapsed/phaseTotal)*100).toFixed(25)}%`),
+                        this.createUnit('Progress', `${((phaseElapsed/phaseTotal)*100).toFixed(2)}%`),
                         this.createUnit('Elapsed', `${phaseElapsed.toFixed(2)}m`),
                         this.createUnit('Remaining', `${phaseRemaining.toFixed(2)}m`),
-                        this.createUnit('Total', `${phaseTotal.toFixed(1)}m`)
+                        this.createUnit('Total', `${phaseTotal.toFixed(0)}m`)
                     ].join('');
                 }
 
@@ -393,10 +393,10 @@
                 
                 document.getElementById('day-progress').style.width = `${dayPercent}%`;
                 document.getElementById('day-stats').innerHTML = [
-                    this.createUnit('Progress', `${dayPercent.toFixed(5)}%`),
+                    this.createUnit('Progress', `${dayPercent.toFixed(2)}%`),
                     this.createUnit('Elapsed', `${(dayProgress/60).toFixed(3)}h`),
                     this.createUnit('Remaining', `${(dayRemaining/60).toFixed(3)}h`),
-                    this.createUnit('Total', `${(totalDayDuration/60).toFixed(3)}h`)
+                    this.createUnit('Total', `${(totalDayDuration/60).toFixed(1)}h`)
                 ].join('');
                 
                 
