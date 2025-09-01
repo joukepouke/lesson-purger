@@ -24,8 +24,7 @@ class ScheduleManager {
     }
 
     recalculateSchedule() {
-        if (Date.now() - this.lastUpdate < 1000) return;
-        
+
         const activeLessons = this.originalSchedule.filter(lesson => 
             !this.deletedLessons.has(lesson.id)
         );
