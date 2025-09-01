@@ -99,7 +99,7 @@ class ScheduleManager {
             `${String(now.getMinutes()).padStart(2,'0')}:` +
             `${String(now.getSeconds()).padStart(2,'0')}.` +
             `${String(now.getMilliseconds()).padStart(3,'0')}`;
-            
+        console.log("update!");
         this.updateStatistics(currentMinutes);
         setTimeout(() => this.update(), 50);
     }
