@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Day Tracker</title>
+    <title>Settings - School Day Tracker</title>
     <link rel="stylesheet" href="style.css">
     <script>
-        // Theme Loader Script: Apply theme before the page renders to prevent FOUC
+        // Theme Loader Script (same as index.html)
         (function() {
             try {
                 const settings = JSON.parse(localStorage.getItem('schoolDayTrackerSettings'));
@@ -28,25 +28,18 @@
     </script>
 </head>
 <body>
-    <div class="container">
-        <!-- Settings button is now a link -->
-        <a href="settings.html" class="settings-btn" title="Open Settings">⚙️</a>
+    <div class="settings-container">
+        <header class="settings-header">
+            <h1>Settings</h1>
+            <a href="index.html" class="back-btn">← Back to Tracker</a>
+        </header>
 
-        <div class="hero">
-            <div class="current-time" id="current-time">--:--:--.--</div>
-            <div class="lesson-end" id="hero-info"></div>
-        </div>
-
-        <div class="stat-grid" id="stat-grid">
-            <!-- Stat cards will be dynamically generated here -->
-        </div>
-
-        <div class="schedule-list" id="schedule">
-            <!-- Schedule items will be dynamically generated here -->
-        </div>
+        <main id="settings-body">
+            <!-- Settings content will be dynamically generated here -->
+        </main>
     </div>
 
     <script src="settings_manager.js"></script>
-    <script src="script.js"></script>
+    <script src="settings.js"></script>
 </body>
 </html>
