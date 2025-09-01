@@ -161,7 +161,7 @@ class ScheduleManager {
             }
             currentPhaseLessons.push(activeLessons[i]);
         }
-        if (currentPhaseLessons.length > 0) phases.push(currentPhaseLessons);
+        if (currentPhaseLessons.length > 0) phases.push([...currentPhaseLessons]);
         phases.forEach(phaseLessons => {
             const phaseStart = phaseLessons[0].startMinutes;
             const phaseEnd = phaseLessons[phaseLessons.length - 1].endMinutes;
@@ -356,15 +356,29 @@ class StatCard {
     }
 
     getDataForType(scheduleData) {
-        const { currentSegment, currentPhase, day, currentTotalMinutes } = scheduleData;
         switch (this.config.type) {
-            case 'segment': 
-                return currentSegment ? { start: currentSegment.start, end: currentSegment.end, elapsed: currentTotalMinutes - currentSegment.start, total: currentSegment.end - currentSegment.start } : null;
-            case 'phase': 
-                return currentPhase ? { start: currentPhase.start, end: currentPhase.end, elapsed: currentTotalMinutes - currentPhase.start, total: currentPhase.end - currentPhase.start } : null;
-            case 'day': 
-                return { elapsed: day.elapsed, total: day.total };
-            default: 
+            case 'segment':
+                if (!scheduleData.currentSegment) return null;
+                return {
+                    start: scheduleData.currentSegment.start,
+                    end: scheduleData.currentSegment.end,
+                    elapsed: scheduleData.currentTotalMinutes - scheduleData.currentSegment.start,
+                    total: scheduleData.currentSegment.end - scheduleData.currentSegment.start,
+                };
+            case 'phase':
+                if (!scheduleData.currentPhase) return null;
+                return {
+                    start: scheduleData.currentPhase.start,
+                    end: scheduleData.currentPhase.end,
+                    elapsed: scheduleData.currentTotalMinutes - scheduleData.currentPhase.start,
+                    total: scheduleData.currentPhase.end - scheduleData.currentPhase.start,
+                };
+            case 'day':
+                return {
+                    elapsed: scheduleData.day.elapsed,
+                    total: scheduleData.day.total,
+                };
+            default:
                 return null;
         }
     }

@@ -3,6 +3,7 @@ class SettingsPage {
         this.settingsManager = new SettingsManager();
         this.dom = {
             body: document.getElementById('settings-body'),
+            resetAllBtn: document.getElementById('reset-all-settings'),
         };
 
         // --- Data Definitions ---
@@ -25,6 +26,7 @@ class SettingsPage {
         };
 
         this.render();
+        this.attachGlobalEventListeners();
     }
 
     render() {
@@ -121,7 +123,7 @@ class SettingsPage {
             </div>`;
 
         this.dom.body.innerHTML = html;
-        this.attachEventListeners();
+        this.attachSettingEventListeners();
     }
 
     renderSettingItem(label, inputHtml, settingPath) {
@@ -172,7 +174,16 @@ class SettingsPage {
         </div>`;
     }
 
-    attachEventListeners() {
+    attachGlobalEventListeners() {
+        this.dom.resetAllBtn.addEventListener('click', () => {
+            if (confirm("Are you sure you want to reset all settings to their defaults? This cannot be undone.")) {
+                localStorage.removeItem('schoolDayTrackerSettings');
+                window.location.reload();
+            }
+        });
+    }
+
+    attachSettingEventListeners() {
         this.dom.body.addEventListener('change', e => {
             const target = e.target;
             const settingPath = target.dataset.setting;
@@ -181,19 +192,16 @@ class SettingsPage {
             const value = target.type === 'checkbox' ? target.checked : (target.type === 'number' ? parseFloat(target.value) : target.value);
             this.settingsManager.set(settingPath, value);
 
-            // If the stat type was changed, we must update its unit to a valid one and re-render
             if (settingPath.endsWith('.type')) {
                 const newType = value;
                 const validUnits = this.STAT_UNIT_MAP[newType];
                 if (validUnits && validUnits.length > 0) {
                     const basePath = settingPath.substring(0, settingPath.lastIndexOf('.'));
-                    // Set unit to the first valid option to prevent an invalid state
                     this.settingsManager.set(`${basePath}.unit`, validUnits[0]);
                 }
-                this.render(); // Re-render to update the unit dropdown
-                return; // Stop further processing for this event
+                this.render(); 
+                return;
             }
-             // Re-render if unit type changes, to show/hide decimal field
             if (settingPath.endsWith('.unit')) {
                 this.render();
             }
@@ -206,7 +214,6 @@ class SettingsPage {
             }
         });
 
-        // Use 'input' for live updates on text/number fields without losing focus
         this.dom.body.addEventListener('input', e => {
             const target = e.target;
             const settingPath = target.dataset.setting;
@@ -222,14 +229,13 @@ class SettingsPage {
             }
         });
         
-        // Handle reset buttons
         this.dom.body.addEventListener('click', e => {
             if (e.target.matches('[data-reset-path]')) {
                 const path = e.target.dataset.resetPath;
                 const defaultValue = this.settingsManager.getDefault(path);
                 this.settingsManager.set(path, defaultValue);
-                this.render(); // Re-render to show reset value
-                this.applyTheme(); // Re-apply theme in case it was changed
+                this.render();
+                this.applyTheme();
             }
         });
     }
