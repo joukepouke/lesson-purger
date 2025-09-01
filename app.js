@@ -108,7 +108,8 @@ class ScheduleManager {
         let currentSegment = null;
         let dayProgress = 0;
         let totalDayDuration = 0;
-        
+
+        console.log("updating stats!")
         const timeSegments = [];
         this.cachedPhases.forEach(phase => {
             phase.forEach((lesson, index) => {
