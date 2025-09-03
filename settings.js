@@ -12,13 +12,15 @@ class SettingsPage {
             'minutes_decimal': { label: 'Minutes (decimal)', supportsDecimals: true },
             'hours_decimal': { label: 'Hours (decimal)', supportsDecimals: true },
             'minutes_seconds': { label: 'Duration (MM:SS)', supportsDecimals: false },
+            'minutes_seconds_decimal': { label: 'Duration (MM:SS.ss)', supportsDecimals: true },
+            'seconds_decimal': { label: 'Seconds (decimal)', supportsDecimals: true },
             'time_hh_mm': { label: 'Time (HH:MM)', supportsDecimals: false },
         };
         
         this.STAT_UNIT_MAP = {
             progress: ['percent'],
-            elapsed: ['minutes_seconds', 'minutes_decimal', 'hours_decimal'],
-            remaining: ['minutes_seconds', 'minutes_decimal', 'hours_decimal'],
+            elapsed: ['minutes_seconds', 'minutes_seconds_decimal', 'seconds_decimal', 'minutes_decimal', 'hours_decimal'],
+            remaining: ['minutes_seconds', 'minutes_seconds_decimal', 'seconds_decimal', 'minutes_decimal', 'hours_decimal'],
             total: ['minutes_seconds', 'minutes_decimal', 'hours_decimal'],
             start: ['time_hh_mm'],
             end: ['time_hh_mm'],

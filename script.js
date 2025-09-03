@@ -318,7 +318,12 @@ class UIManager {
         const totalSeconds = absMinutes * 60;
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
-        return `${sign}${String(minutes).padStart(2, '0')}:${seconds.toFixed(decimals).padStart(2 + (decimals > 0 ? 1 : 0), '0')}`;
+        
+        if (decimals > 0) {
+            const secondsFormatted = seconds.toFixed(decimals).padStart(2 + decimals + 1, '0');
+            return `${sign}${String(minutes).padStart(2, '0')}:${secondsFormatted}`;
+        }
+        return `${sign}${String(minutes).padStart(2, '0')}:${String(Math.floor(seconds)).padStart(2, '0')}`;
     }
     
     formatTime(timeStr) {
@@ -404,7 +409,11 @@ class StatCard {
             case 'percent': return `${rawValue.toFixed(unitConfig.decimals)}%`;
             case 'minutes_decimal': return `${rawValue.toFixed(unitConfig.decimals)}m`;
             case 'hours_decimal': return `${(rawValue / 60).toFixed(unitConfig.decimals)}h`;
-            case 'minutes_seconds': return this.uiManager.formatDuration(rawValue, 0);
+            case 'minutes_seconds': return this.uiManager.formatDuration(rawValue, unitConfig.decimals);
+            case 'minutes_seconds_decimal': 
+                return this.uiManager.formatDuration(rawValue, unitConfig.decimals);
+            case 'seconds_decimal': 
+                return `${(rawValue * 60).toFixed(unitConfig.decimals)}s`;
             case 'time_hh_mm': return this.uiManager.formatMinutes(rawValue);
             default: return null;
         }
