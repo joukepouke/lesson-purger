@@ -23,6 +23,30 @@ class SettingsManager {
                 timeLoop: { enabled: false, duration: 60 },
             },
             statCards: {
+                weekProgress: {
+                    id: 'weekProgress', title: 'Week Progress', type: 'week', enabled: true,
+                    units: [
+                        { type: 'progress', unit: 'percent', decimals: 1 },
+                        { type: 'elapsed', unit: 'hours_decimal', decimals: 1 },
+                        { type: 'remaining', unit: 'hours_decimal', decimals: 1 },
+                    ]
+                },
+                termProgress: {
+                    id: 'termProgress', title: 'Term Progress', type: 'term', enabled: true,
+                    units: [
+                        { type: 'progress', unit: 'percent', decimals: 1 },
+                        { type: 'elapsed', unit: 'days_decimal', decimals: 0 },
+                        { type: 'remaining', unit: 'days_decimal', decimals: 0 },
+                    ]
+                },
+                yearProgress: {
+                    id: 'yearProgress', title: 'Year Progress', type: 'year', enabled: true,
+                    units: [
+                        { type: 'progress', unit: 'percent', decimals: 1 },
+                        { type: 'elapsed', unit: 'days_decimal', decimals: 0 },
+                        { type: 'remaining', unit: 'days_decimal', decimals: 0 },
+                    ]
+                },
                 currentLesson: {
                     id: 'currentLesson', title: 'Current Segment', type: 'segment', enabled: true,
                     units: [

@@ -383,6 +383,66 @@ class StatCard {
                     elapsed: scheduleData.day.elapsed,
                     total: scheduleData.day.total,
                 };
+            case 'week': {
+                const now = new Date();
+                const today = now.getDay(); // 0 = Sunday, 1 = Monday...
+                const monday = new Date(now);
+                monday.setDate(now.getDate() - (today === 0 ? 6 : today - 1));
+                monday.setHours(0,0,0,0);
+                
+                const friday = new Date(monday);
+                friday.setDate(monday.getDate() + 4);
+                friday.setHours(23,59,59,999);
+                
+                const totalWeekMinutes = 5 * 8 * 60; // 5 days * 8 hours * 60 minutes
+                const elapsedToday = scheduleData.day.elapsed;
+                const elapsedDays = Math.min(4, (today < 1 || today > 5 ? 0 : today - 1)); // 0-4
+                const elapsedMinutes = (elapsedDays * 8 * 60) + (today >= 1 && today <= 5 ? elapsedToday : 0);
+                
+                return {
+                    start: monday,
+                    end: friday,
+                    elapsed: elapsedMinutes,
+                    total: totalWeekMinutes
+                };
+            }
+            case 'term': {
+                const now = new Date();
+                // Define term periods based on Dutch school holidays 2024-2025
+                const terms = [
+                    {start: new Date('2024-08-26'), end: new Date('2024-10-18')}, // Until Herfstvakantie
+                    {start: new Date('2024-10-27'), end: new Date('2024-12-20')}, // Until Kerstvakantie
+                    {start: new Date('2025-01-05'), end: new Date('2025-02-21')}, // Until Voorjaarsvakantie
+                    {start: new Date('2025-03-02'), end: new Date('2025-04-22')}, // Until Meivakantie
+                    {start: new Date('2025-05-06'), end: new Date('2025-07-04')}  // End of year
+                ];
+                
+                const currentTerm = terms.find(t => now >= t.start && now <= t.end) || terms[0];
+                const totalTermMs = currentTerm.end - currentTerm.start;
+                const elapsedTermMs = now - currentTerm.start;
+                
+                return {
+                    start: currentTerm.start,
+                    end: currentTerm.end,
+                    elapsed: elapsedTermMs / 1000 / 60, // Convert ms to minutes
+                    total: totalTermMs / 1000 / 60
+                };
+            }
+            case 'year': {
+                const yearStart = new Date('2024-08-24');
+                const yearEnd = new Date('2025-07-04');
+                const now = new Date();
+                
+                const totalYearMs = yearEnd - yearStart;
+                const elapsedYearMs = now - yearStart;
+                
+                return {
+                    start: yearStart,
+                    end: yearEnd,
+                    elapsed: elapsedYearMs / 1000 / 60, // Convert ms to minutes
+                    total: totalYearMs / 1000 / 60
+                };
+            }
             default:
                 return null;
         }
