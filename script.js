@@ -463,7 +463,7 @@ class StatCard {
             default: return null;
         }
 
-        if (typeof rawValue !== 'number' || isNaN(rawValue)) return '...';
+        if ((typeof rawValue !== 'number' && !(rawValue instanceof Date)) || isNaN(rawValue)) return '...';
 
         switch (unitConfig.unit) {
             case 'percent': return `${rawValue.toFixed(unitConfig.decimals)}%`;
