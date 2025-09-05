@@ -475,6 +475,11 @@ class StatCard {
             case 'seconds_decimal': 
                 return `${(rawValue * 60).toFixed(unitConfig.decimals)}s`;
             case 'time_hh_mm': return this.uiManager.formatMinutes(rawValue);
+            case 'date': 
+                if (rawValue instanceof Date) {
+                    return rawValue.toISOString().split('T')[0]; // YYYY-MM-DD format
+                }
+                return '---';
             default: return null;
         }
     }

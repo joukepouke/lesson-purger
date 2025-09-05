@@ -15,6 +15,7 @@ class SettingsPage {
             'minutes_seconds_decimal': { label: 'Duration (MM:SS.ss)', supportsDecimals: true },
             'seconds_decimal': { label: 'Seconds (decimal)', supportsDecimals: true },
             'time_hh_mm': { label: 'Time (HH:MM)', supportsDecimals: false },
+            'date': { label: 'Date (YYYY-MM-DD)', supportsDecimals: false },
         };
         
         this.STAT_UNIT_MAP = {
@@ -22,8 +23,8 @@ class SettingsPage {
             elapsed: ['minutes_seconds', 'minutes_seconds_decimal', 'seconds_decimal', 'minutes_decimal', 'hours_decimal'],
             remaining: ['minutes_seconds', 'minutes_seconds_decimal', 'seconds_decimal', 'minutes_decimal', 'hours_decimal'],
             total: ['minutes_seconds', 'minutes_decimal', 'hours_decimal'],
-            start: ['time_hh_mm'],
-            end: ['time_hh_mm'],
+            start: ['date', 'time_hh_mm'],
+            end: ['date', 'time_hh_mm'],
             none: [],
         };
 
