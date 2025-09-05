@@ -410,11 +410,11 @@ class StatCard {
                 const now = new Date();
                 // Define term periods based on Dutch school holidays 2024-2025
                 const terms = [
-                    {start: new Date('2024-08-26'), end: new Date('2024-10-18')}, // Until Herfstvakantie
-                    {start: new Date('2024-10-27'), end: new Date('2024-12-20')}, // Until Kerstvakantie
-                    {start: new Date('2025-01-05'), end: new Date('2025-02-21')}, // Until Voorjaarsvakantie
-                    {start: new Date('2025-03-02'), end: new Date('2025-04-22')}, // Until Meivakantie
-                    {start: new Date('2025-05-06'), end: new Date('2025-07-04')}  // End of year
+                    {start: new Date('2025-08-26'), end: new Date('2025-10-18')}, // Until Herfstvakantie
+                    {start: new Date('2025-10-27'), end: new Date('2025-12-20')}, // Until Kerstvakantie
+                    {start: new Date('2026-01-05'), end: new Date('2026-02-21')}, // Until Voorjaarsvakantie
+                    {start: new Date('2026-03-02'), end: new Date('2026-04-22')}, // Until Meivakantie
+                    {start: new Date('2026-05-06'), end: new Date('2026-07-04')}  // End of year
                 ];
                 
                 const currentTerm = terms.find(t => now >= t.start && now <= t.end) || terms[0];
@@ -429,8 +429,8 @@ class StatCard {
                 };
             }
             case 'year': {
-                const yearStart = new Date('2024-08-24');
-                const yearEnd = new Date('2025-07-04');
+                const yearStart = new Date('2025-08-24');
+                const yearEnd = new Date('2026-07-04');
                 const now = new Date();
                 
                 const totalYearMs = yearEnd - yearStart;

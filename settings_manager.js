@@ -56,6 +56,7 @@ class SettingsManager {
                         { type: 'progress', unit: 'percent', decimals: 1 },
                         { type: 'elapsed', unit: 'hours_decimal', decimals: 1 },
                         { type: 'remaining', unit: 'hours_decimal', decimals: 1 },
+                        { type: 'start', unit: 'time_hh_mm', decimals: 0 },
                     ]
                 },
                 termProgress: {
@@ -64,6 +65,7 @@ class SettingsManager {
                         { type: 'progress', unit: 'percent', decimals: 1 },
                         { type: 'elapsed', unit: 'days_decimal', decimals: 0 },
                         { type: 'remaining', unit: 'days_decimal', decimals: 0 },
+                        { type: 'start', unit: 'time_hh_mm', decimals: 0 },
                     ]
                 },
                 yearProgress: {
@@ -72,6 +74,7 @@ class SettingsManager {
                         { type: 'progress', unit: 'percent', decimals: 1 },
                         { type: 'elapsed', unit: 'days_decimal', decimals: 0 },
                         { type: 'remaining', unit: 'days_decimal', decimals: 0 },
+                        { type: 'start', unit: 'time_hh_mm', decimals: 0 },
                     ]
                 }
             }
